@@ -167,7 +167,7 @@ private:
 };
 
 
-enum Direction
+enum class Direction
 {
     Up, Down, Left, Right, None
 };
@@ -205,17 +205,20 @@ Direction reverseDirection(Direction direction)
 
     case Direction::Right:
         return Direction::Left;
+
+    case Direction::None:
+        return Direction::None;
     }
 }
 
-enum GameMode
+enum class GameMode
 {
     Classic,
     Borderlesss,
     Peaceful,
 };
 
-enum GameState
+enum class GameState
 {
     StateMenu,
     StatePlaying,
@@ -383,7 +386,7 @@ private:
 
     int m_snakeInitialLength = 3;
     int m_currentScore = 0;
-    int m_bestScore;
+    int m_bestScore = 0;
 
     GameState m_gameState = GameState::StateMenu;
 
