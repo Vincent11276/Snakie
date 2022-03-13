@@ -5,10 +5,10 @@
 #include <algorithm>
 #include <SFML/Graphics.hpp>
 
-#define KEY_MOVE_UP         sf::Keyboard::W || sf::Keyboard::Up
-#define KEY_MOVE_DOWN       sf::Keyboard::S || sf::Keyboard::Down
-#define KEY_MOVE_LEFT       sf::Keyboard::A || sf::Keyboard::Up
-#define KEY_MOVE_RIGHT      sf::Keyboard::D || sf::Keyboard::Right
+#define KEY_MOVE_UP         sf::Keyboard::W
+#define KEY_MOVE_DOWN       sf::Keyboard::S
+#define KEY_MOVE_LEFT       sf::Keyboard::A
+#define KEY_MOVE_RIGHT      sf::Keyboard::D
 
 #define KEY_START_GAME      sf::Keyboard::Num0
 #define KEY_PAUSE_GAME      sf::Keyboard::Num1
