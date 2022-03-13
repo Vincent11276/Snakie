@@ -146,10 +146,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Snake Game.cpp" />
+    <ClCompile Include="helpers.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="snakegame.cpp" />
+    <ClCompile Include="tilemap.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Snake Game.h" />
+    <ClInclude Include="direction.h" />
+    <ClInclude Include="gamemode.h" />
+    <ClInclude Include="gamestate.h" />
+    <ClInclude Include="keybinds.h" />
+    <ClInclude Include="snakespeed.h" />
+    <ClInclude Include="helpers.h" />
+    <ClInclude Include="snakegame.h" />
+    <ClInclude Include="tilemap.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Assets\snake-graphics.png" />
