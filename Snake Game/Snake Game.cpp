@@ -169,7 +169,7 @@ private:
 
 enum Direction
 {
-    Up, Down, Left, Right
+    Up, Down, Left, Right, None
 };
 
 sf::Vector2i directionToVector(Direction direction)
@@ -227,8 +227,8 @@ enum GameState
 class SnakeGame : public sf::Drawable, public sf::Transformable
 {
 public:
-    bool canCollideBody;
-    bool canLeaveScreen;
+    bool canCollideBody = false;
+    bool canLeaveScreen = true;
 
     SnakeGame()
     {
@@ -295,7 +295,7 @@ public:
 
     void trySetDirection(const Direction direction)
     {
-        if (!direction == reverseDirection(this->m_snakeDirection))
+        if (!(direction == reverseDirection(this->m_snakeDirection)))
         {
             this->m_snakeDirection = direction;
         }
@@ -371,7 +371,7 @@ public:
 private:
     std::vector<sf::Vector2i> m_snakeBodies;
     
-    Direction m_snakeDirection;
+    Direction m_snakeDirection = Direction::Right;
     
     sf::Vector2i m_worldSize;
     sf::Vector2i m_snakeHead;
@@ -381,29 +381,15 @@ private:
     sf::Time m_lastFrameTime;
     sf::Time m_snakeMoveTime;
 
-    int m_snakeInitialLength;
-    int m_currentScore;
+    int m_snakeInitialLength = 3;
+    int m_currentScore = 0;
     int m_bestScore;
 
-    GameState m_gameState;
+    GameState m_gameState = GameState::StateMenu;
 
     TileMap m_tilemap;
 };
 
-class SnakeBody
-{
-public:
-    SnakeBody()
-    {
-        // default..
-    }
-
-    
-    
-
-private:
-    bool alive;
-};
 
 int main()
 {
