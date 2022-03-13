@@ -4,6 +4,8 @@
 #include <iostream>
 #include <algorithm>
 #include <SFML/Graphics.hpp>
+#include <tchar.h>
+
 
 #define KEY_MOVE_UP         sf::Keyboard::W
 #define KEY_MOVE_DOWN       sf::Keyboard::S
@@ -15,6 +17,27 @@
 #define KEY_RESTART_GAME    sf::Keyboard::Num2
 #define KEY_QUIT_GAME       sf::Keyboard::Num3
 
+enum class Direction
+{
+    Up, Down, Left, Right, None
+};
+
+
+enum class GameMode
+{
+    Classic,
+    Borderlesss,
+    Peaceful,
+};
+
+enum class GameState
+{
+    StateMenu,
+    StatePlaying,
+    StatePaused,
+    StateGameEnded,
+    StateGameOver
+};
 
 class Helpers
 {
@@ -41,6 +64,45 @@ public:
         quadPtr[1].color = color;
         quadPtr[2].color = color;
         quadPtr[3].color = color;
+    }
+
+    static sf::Vector2i directionToVector(Direction direction)
+    {
+        switch (direction)
+        {
+        case Direction::Up:
+            return { 0, -1 };
+
+        case Direction::Down:
+            return { 0, 1 };
+
+        case Direction::Left:
+            return { -1, 0 };
+
+        case Direction::Right:
+            return { 1, 0 };
+        }
+    }
+
+    static Direction reverseDirection(Direction direction)
+    {
+        switch (direction)
+        {
+        case Direction::Up:
+            return Direction::Down;
+
+        case Direction::Down:
+            return Direction::Up;
+
+        case Direction::Left:
+            return Direction::Right;
+
+        case Direction::Right:
+            return Direction::Left;
+
+        case Direction::None:
+            return Direction::None;
+        }
     }
 };
 
@@ -98,6 +160,11 @@ public:
     void removeBlock(const sf::Vector2i& coords)
     {
         this->setBlock(coords, -1);
+    }
+
+    void setCellSize(const sf::Vector2f& cellSize)
+    {
+
     }
 
     void setWorldSize(const sf::Vector2i& worldSize)
@@ -167,66 +234,6 @@ private:
 };
 
 
-enum class Direction
-{
-    Up, Down, Left, Right, None
-};
-
-sf::Vector2i directionToVector(Direction direction)
-{
-    switch (direction)
-    {
-    case Direction::Up:
-        return { 0, -1 };
-
-    case Direction::Down:
-        return { 0, 1 };
-
-    case Direction::Left:
-        return { -1, 0 };
-
-    case Direction::Right:
-        return { 1, 0 };
-    }
-}
-
-Direction reverseDirection(Direction direction)
-{
-    switch (direction)
-    {
-    case Direction::Up:
-        return Direction::Down;
-
-    case Direction::Down:
-        return Direction::Up;
-
-    case Direction::Left:
-        return Direction::Right;
-
-    case Direction::Right:
-        return Direction::Left;
-
-    case Direction::None:
-        return Direction::None;
-    }
-}
-
-enum class GameMode
-{
-    Classic,
-    Borderlesss,
-    Peaceful,
-};
-
-enum class GameState
-{
-    StateMenu,
-    StatePlaying,
-    StatePaused,
-    StateGameEnded,
-    StateGameOver
-};
-
 class SnakeGame : public sf::Drawable, public sf::Transformable
 {
 public:
@@ -235,7 +242,16 @@ public:
 
     SnakeGame()
     {
+        // default..
+    }
 
+    void initTileMap(const sf::Vector2i &worldSize, const sf::Vector2f &cellSize, const std::string &path)
+    {
+        if (!this->m_tilemap.loadFromFile(path))
+        {
+            std::cout << "Unable to load tile map image!" << std::endl;
+        }
+        this->m_tilemap.setWorldSize(worldSize);
     }
 
     void setGameMode(const GameMode mode)
@@ -262,7 +278,7 @@ public:
     void moveSnake()
     {
         // Predict the next loation of the head for further analysis if it's a viable move or not
-        sf::Vector2i nextHeadLocation = this->m_snakeBodies.front() + directionToVector(this->m_snakeDirection);
+        sf::Vector2i nextHeadLocation = this->m_snakeBodies.front() + Helpers::directionToVector(this->m_snakeDirection);
 
         // Capture the location of the tail before it moves so when snake grows, we simply append this back
         sf::Vector2i oldTailLocation = this->m_snakeBodies.back();
@@ -298,10 +314,12 @@ public:
 
     void trySetDirection(const Direction direction)
     {
-        if (!(direction == reverseDirection(this->m_snakeDirection)))
+        // Prevent player from moving to the opposite direction as it will eat its own body
+        if (direction == Helpers::reverseDirection(this->m_snakeDirection))
         {
-            this->m_snakeDirection = direction;
+            return;
         }
+        this->m_snakeDirection = direction;
     }
 
     void updateWorld()
@@ -364,14 +382,14 @@ public:
         }
     }
 
-    void draw(sf::RenderTarget& target, sf::RenderStates states)
+private:
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
     {
         states.transform *= this->getTransform();
 
         target.draw(m_tilemap, states);
     }
 
-private:
     std::vector<sf::Vector2i> m_snakeBodies;
     
     Direction m_snakeDirection = Direction::Right;
@@ -393,7 +411,6 @@ private:
     TileMap m_tilemap;
 };
 
-
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(200, 200), "Snake Game");
@@ -403,8 +420,10 @@ int main()
     sf::Vector2f cellSize(64, 64);
 
     TileMap tilemap(worldSize, cellSize);
-    tilemap.loadFromFile("C:\\Users\\VitalityEdge42\\Downloads\\snake-graphics.png");
+    tilemap.loadFromFile("..\\Assets\\snake-graphics.png");
     tilemap.trySetBlock(sf::Vector2i(0, 0), 0);
+
+    SnakeGame snakeGame;
 
     while (window.isOpen())
     {
