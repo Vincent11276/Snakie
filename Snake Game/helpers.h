@@ -5,19 +5,22 @@
 #include "direction.h"
 
 
-class Helpers
+namespace snek
 {
-public:
-    static void setQuadVerticesTexCoords(sf::Vertex* quadPtr, const sf::FloatRect& rect);
+    class Helpers
+    {
+    public:
+        static void setQuadVerticesTexCoords(sf::Vertex* quadPtr, const sf::FloatRect& rect);
 
-    static void setQuadVerticesCorners(sf::Vertex* quadPtr, const sf::FloatRect& rect);
+        static void setQuadVerticesCorners(sf::Vertex* quadPtr, const sf::FloatRect& rect);
 
-    static void setQuadVerticesColors(sf::Vertex* quadPtr, const sf::Color& color);
+        static void setQuadVerticesColors(sf::Vertex* quadPtr, const sf::Color& color);
 
-    static sf::Vector2i directionToVector(Direction direction);
+        static sf::Vector2i directionToVector(Direction direction);
 
-    static Direction reverseDirection(Direction direction);
+        static Direction reverseDirection(Direction direction);
 
-    template <typename T>
-    static sf::Vector2f getScaleRatio(sf::Vector2<T> currentSize, sf::Vector2<T> targetSize);
-};
+        template <typename T>
+        static sf::Vector2f getScaleRatio(sf::Vector2<T> currentSize, sf::Vector2<T> targetSize);
+    };
+}

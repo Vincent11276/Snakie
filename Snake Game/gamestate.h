@@ -1,11 +1,14 @@
 #pragma once
 
 
-enum class GameState
+namespace snek
 {
-    StateMenu,
-    StatePlaying,
-    StatePaused,
-    StateGameEnded,
-    StateGameOver
-};
+    enum class GameState
+    {
+        StateMenu,
+        StatePlaying,
+        StatePaused,
+        StateGameEnded,
+        StateGameOver
+    };
+}

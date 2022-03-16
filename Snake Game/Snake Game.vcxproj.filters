@@ -56,6 +56,9 @@
     <ClInclude Include="keybinds.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="worldscale.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Assets\snake-graphics.png">

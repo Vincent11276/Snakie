@@ -56,6 +56,20 @@ namespace snek
         this->setBlock(coords, -1);
     }
 
+
+    void TileMap::clear()
+    {
+        sf::Vector2i worldSize = this->getDimensions();
+
+        for (int y = 0; y < worldSize.x; y++)
+        {
+            for (int x = 0; x < worldSize.x; x++)
+            {
+                this->removeBlock({ x, y });
+            }
+        }
+    }
+
     void TileMap::setCellSize(const sf::Vector2f& cellSize)
     {
         this->m_cellSize = cellSize;
@@ -148,9 +162,4 @@ namespace snek
 
         target.draw(this->m_vertices, states);
     }
-
-    std::vector<std::vector<int>> m_blocksData;
-    sf::Vector2f m_cellSize;
-    sf::Texture m_tilemap_tex;
-    sf::VertexArray m_vertices;
 };

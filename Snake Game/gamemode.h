@@ -1,9 +1,12 @@
 #pragma once
 
 
-enum class GameMode
+namespace snek
 {
-    Classic,
-    Borderlesss,
-    Peaceful,
-};
+    enum class GameMode
+    {
+        Classic,
+        Borderlesss,
+        Peaceful,
+    };
+}

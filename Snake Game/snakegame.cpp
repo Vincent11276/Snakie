@@ -1,24 +1,48 @@
 #include "snakegame.h"
 
-#include <iostream>
-#include "keybinds.h"
 
 namespace snek
 {
-    sf::Time m_snakeMoveTime = sf::milliseconds(200);
-    int m_snakeInitialLength = 3;
-
-    bool canCollideBody = false;
-    bool canLeaveScreen = true;
-
     SnakeGame::SnakeGame()
     {
-        // default..
+        this->loadResources();
+    }
+
+    void SnakeGame::loadResources()
+    {
+        const std::string assetsFolder = "..\\Assets";
+
+        std::cout << "Loading tile map texture ";
+
+        if (this->m_tilemap.loadFromFile(assetsFolder + "\\snake-graphics.png"))
+        {
+            std::cout << "-- success!" << std::endl;
+        }
+        else std::cout << "-- failed!" << std::endl;
+
+        this->m_tilemap.setCellSize({ 60.0f, 60.0f });
     }
 
     void SnakeGame::startGame()
     {
+        this->initGameMode();
+        this->initWorldScale();
+        this->initSnakeSpeed();
+        this->initSnake();
+        this->resetVariables();
+
         this->m_gameState = GameState::StatePlaying;
+
+        std::cout << "The game has started!" << std::endl;
+    }
+
+    void SnakeGame::resetVariables()
+    {
+        this->m_isAppleExists = false;
+        this->m_lastFrameTime = sf::Time::Zero;
+        this->m_elapsedTime = sf::Time::Zero;
+        this->m_currentScore = 0;
+        this->m_snakeDirection = this->inititalDirection;
     }
 
     void SnakeGame::pauseGame()
@@ -36,9 +60,9 @@ namespace snek
         this->m_gameState = GameState::StateGameEnded;
     }
 
-    void SnakeGame::setGameMode(const GameMode mode)
+    void SnakeGame::initGameMode()
     {
-        switch (mode)
+        switch (this->gameMode)
         {
         case GameMode::Classic:
             this->canCollideBody = false;
@@ -57,13 +81,49 @@ namespace snek
         }
     }
 
-    void SnakeGame::initTileMap(const sf::Vector2i& worldSize, const sf::Vector2f& cellSize, const std::string& path)
+    void SnakeGame::initSnakeSpeed()
     {
-        if (!this->m_tilemap.loadFromFile(path))
+        switch (this->snakeSpeed)
         {
-            std::cout << "Unable to load tile map image!" << std::endl;
+        case SnakeSpeed::Slow:      this->snakeMoveTime = SNAKE_SPEED_SLOW;     break;
+
+        case SnakeSpeed::Normal:    this->snakeMoveTime = SNAKE_SPEED_NORMAL;   break;
+
+        case SnakeSpeed::Fast:      this->snakeMoveTime = SNAKE_SPEED_FAST;     break;
         }
-        this->m_tilemap.setWorldSize(worldSize);
+    }
+
+    void SnakeGame::initWorldScale()
+    {
+        switch (this->worldScale)
+        {
+        case WorldScale::Small:     this->m_worldSize = WORLD_SIZE_SMALL;       break;
+
+        case WorldScale::Normal:    this->m_worldSize = WORLD_SIZE_NORMAL;      break;
+
+        case WorldScale::Big:       this->m_worldSize = WORLD_SIZE_BIG;         break;
+
+        case WorldScale::Extreme:   this->m_worldSize = WORLD_SIZE_EXTREME;     break;
+        }
+        this->m_tilemap.setWorldSize(this->m_worldSize);
+    }
+
+    void SnakeGame::initSnake()
+    {
+        sf::Vector2i worldSize = this->m_tilemap.getDimensions();
+        sf::Vector2i worldCentre = { worldSize.x / 2, worldSize.y / 2 };
+
+        std::cout << worldCentre.x << "  " << worldCentre.y << std::endl;
+
+        sf::Vector2i tailGrowDir = Helpers::directionToVector(Helpers::reverseDirection(this->inititalDirection));
+
+        this->m_snakeBodies.clear();
+
+        for (int i = 0; i < this->snakeInitialLength; i++)
+        {
+            this->m_snakeBodies.push_back(worldCentre + sf::Vector2i(tailGrowDir.x * i, tailGrowDir.y * i));
+        }
+        this->displaySnake();
     }
 
     void SnakeGame::moveSnake()
@@ -110,15 +170,21 @@ namespace snek
         {
             return;
         }
+        std::cout << "new dir = " << (int)direction << std::endl;
         this->m_snakeDirection = direction;
     }
 
-    void SnakeGame::updateWorld()
+    void SnakeGame::displaySnake()
     {
+        this->m_tilemap.clear();
+
         for (const auto& body : this->m_snakeBodies)
         {
             this->m_tilemap.trySetBlock(body, 1);
+
+            std::cout << "{ " << body.x << ", " << body.y << " }, ";
         }
+        std::cout << std::endl;
     }
 
     bool SnakeGame::isInBounds(const sf::Vector2i& coords)
@@ -164,12 +230,12 @@ namespace snek
         case GameState::StatePlaying:
             this->m_elapsedTime += delta;
 
-            if (this->m_elapsedTime >= this->m_lastFrameTime + this->m_snakeMoveTime)
+            if (this->m_elapsedTime >= (this->m_lastFrameTime + this->snakeMoveTime))
             {
-                std::cout << delta.asMicroseconds() << std::endl;
+                std::cout << this->snakeMoveTime.asMicroseconds() << std::endl;
                 this->m_lastFrameTime = this->m_elapsedTime;
                 this->moveSnake();
-                this->updateWorld();
+                this->displaySnake();
             }
         }
     }

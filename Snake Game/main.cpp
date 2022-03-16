@@ -11,19 +11,22 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "Snake Game");
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Snake Game");
     window.setFramerateLimit(60);
 
     sf::Vector2i worldSize(16, 16); 
     sf::Vector2f cellSize(64, 64);
 
-    SnakeGame snakeGame;
+    snek::SnakeGame snakeGame;
+    snakeGame.snakeSpeed = snek::SnakeSpeed::Normal;
+    snakeGame.worldScale = snek::WorldScale::Normal;
+    snakeGame.setScale(0.2f, 0.2f);
 
     sf::Clock deltaClock;
 
     while (window.isOpen())
     {
-        sf::Time delta = deltaClock.getElapsedTime();
+        sf::Time delta = deltaClock.restart();
 
         sf::Event event;
         while (window.pollEvent(event))

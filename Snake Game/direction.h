@@ -1,6 +1,9 @@
 #pragma once
 
-enum class Direction
+namespace snek
 {
-    Up, Down, Left, Right, None
-};
+	enum class Direction
+	{
+		Up, Down, Left, Right, None
+	};
+}

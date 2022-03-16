@@ -1,7 +1,10 @@
 #pragma once
 
 
-enum class SnakeSpeed
+namespace snek
 {
-    Slow, Normal, Fast
-};
+	enum class SnakeSpeed
+	{
+		Slow, Normal, Fast
+	};
+}

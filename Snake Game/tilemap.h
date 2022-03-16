@@ -22,6 +22,8 @@ namespace snek
 
         void removeBlock(const sf::Vector2i& coords);
 
+        void clear();
+
         void setCellSize(const sf::Vector2f& cellSize);
 
         void setWorldSize(const sf::Vector2i& worldSize);

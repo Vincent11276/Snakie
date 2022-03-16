@@ -160,6 +160,7 @@
     <ClInclude Include="helpers.h" />
     <ClInclude Include="snakegame.h" />
     <ClInclude Include="tilemap.h" />
+    <ClInclude Include="worldscale.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Assets\snake-graphics.png" />
